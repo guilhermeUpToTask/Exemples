@@ -1,0 +1,19 @@
+section {
+    display: flex;
+    justify-content: space-between;
+}
+
+ul {
+    width: 20svw;
+    border: 1px black solid;
+    border-radius: 10px;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+li{
+    width: fit-content;
+}
+
+article {
+    width: 30svw;
+}

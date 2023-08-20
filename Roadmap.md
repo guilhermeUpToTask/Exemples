@@ -5,7 +5,7 @@
     [] Responsive Layout
     [] Display Exemples
     [] Animations
-    []Queries
+    [] Media Queries
 
 ## Javascript & Typescript
     [] Basics Structures
@@ -46,7 +46,11 @@
     [] Testing
     [] RestApi
     [] GraphQL
-
+    [] Prisma
+    [] Mongo DB
+    [] PostgreSQL 
+    [] DDD Progamming
+    [] Unit Tests
 
 ## Docker
     [] Basic Funcionality
