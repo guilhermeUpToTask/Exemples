@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import Child from './Child';
-import './basic.css';
+
 export enum Lists {
     TREES = 'Trees', 
     ROCKS =   'Rocks', 

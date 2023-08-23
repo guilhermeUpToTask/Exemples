@@ -1,6 +1,9 @@
-section {
+.BasicSection {
     display: flex;
     justify-content: space-between;
+}
+.BasicArticle {
+    width: 30svw;
 }
 
 ul {
@@ -12,8 +15,4 @@ ul {
 }
 li{
     width: fit-content;
-}
-
-article {
-    width: 30svw;
 }
