@@ -2,6 +2,8 @@ import React from 'react';
 import UseStateHook from './UseStateHook';
 import UseContextHook from './UseContextHook';
 import UseEffectHook from './UseEffectHook';
+import UseIdHook from './UseIdHook';
+import UseRefHook from './UseRefHook';
 
 export default function Hooks(): React.ReactElement {
     return (
@@ -11,7 +13,8 @@ export default function Hooks(): React.ReactElement {
             <UseStateHook />
             <UseContextHook />
             <UseEffectHook />
-            
+            <UseIdHook />
+            <UseRefHook />
         </section>
     )
 }
