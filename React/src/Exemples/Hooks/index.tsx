@@ -4,6 +4,8 @@ import UseContextHook from './UseContextHook';
 import UseEffectHook from './UseEffectHook';
 import UseIdHook from './UseIdHook';
 import UseRefHook from './UseRefHook';
+import UseMemoHook from './UseMemoHook';
+import UseCallBackHook from './UseCallBackHook';
 
 export default function Hooks(): React.ReactElement {
     return (
@@ -15,6 +17,8 @@ export default function Hooks(): React.ReactElement {
             <UseEffectHook />
             <UseIdHook />
             <UseRefHook />
+            <UseMemoHook/>
+            <UseCallBackHook/>
         </section>
     )
 }

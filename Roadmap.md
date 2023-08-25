@@ -14,7 +14,7 @@
     [] Promises and asyncs
 
 ## React
-    [] Basic Architeture
+    [x] Basic Architeture
     [] Suspense
     [] DOM Render
     [] Callback and useMemo
