@@ -6,6 +6,8 @@ import UseIdHook from './UseIdHook';
 import UseRefHook from './UseRefHook';
 import UseMemoHook from './UseMemoHook';
 import UseCallBackHook from './UseCallBackHook';
+import UseReducerHook from './UseReducerHook';
+import CustomHooks from './CustomHooks';
 
 export default function Hooks(): React.ReactElement {
     return (
@@ -19,6 +21,8 @@ export default function Hooks(): React.ReactElement {
             <UseRefHook />
             <UseMemoHook/>
             <UseCallBackHook/>
+            <UseReducerHook/>
+            <CustomHooks/>
         </section>
     )
 }

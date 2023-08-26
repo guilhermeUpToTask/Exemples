@@ -12,6 +12,8 @@
     [] Objects
     [] Typescript Principles
     [] Promises and asyncs
+    [] Subscribes and events
+    [] Functions inside Objects
 
 ## React
     [x] Basic Architeture

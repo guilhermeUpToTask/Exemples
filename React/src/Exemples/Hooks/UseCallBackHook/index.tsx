@@ -37,7 +37,7 @@ export default function UseCallBackHook(): React.ReactElement {
             <p>
                 Caching a function with useCallback  is only valuable in a few cases:
             </p>
-            <ul>
+            <ul style={{ width: '70svw' }}>
                 <li>
                     You pass it as a prop to a component wrapped in memo.
                     You want to skip re-rendering if the value hasn’t changed. Memoization lets your component
