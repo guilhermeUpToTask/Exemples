@@ -6,5 +6,6 @@ export default function useFakeDataById(id: number) {
     return useQuery<fakeDataType>({
         queryKey: ["fakeData", id],
         queryFn: () => fakeFetchDataById(id),
+        retry: false,
     })
 }
