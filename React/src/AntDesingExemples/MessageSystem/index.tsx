@@ -67,6 +67,7 @@ export default function MessageSystem(): React.ReactElement {
         success('async');
         setIsAsyncLoading(false);
     }
+    
     const asyncCall = async (): Promise<{ id: number, name: string }> => {
         return new Promise((resolve) => {
             setTimeout(() => {
