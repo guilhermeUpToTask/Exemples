@@ -74,36 +74,30 @@ export default class SinglyLinkedList<T> {
         let currentNode = this.head;
         let previousNode = undefined;
 
+
         for (let i = 0; i < this.length; i++) {
 
             if (currentNode?.item === item) {
                 if (i === 0) {
-                    this.head = currentNode.next;
-                    //free node
-
-                    currentNode = undefined;
-                    this.length--;
-                    return item;
-
-                } else if (i === this.length - 1 && previousNode) {
-                    this.tail = previousNode;
-                    previousNode.next = undefined;
-                    // clear node
-                    currentNode = undefined;
-
-                    this.length--;
-                    return item;
-
+                    this.head = currentNode?.next;
+                    if (this.length === 1) {
+                        this.tail = undefined;
+                    }
                 } else if (previousNode) {
-                    const temp = currentNode;
-                    previousNode.next = currentNode.next;
-
-                    //clear node
-                    currentNode = undefined;
-
-                    this.length--;
-                    return item;
+                    if (i === this.length - 1) {
+                        this.tail = previousNode;
+                        previousNode.next = undefined;
+                    } else {
+                        previousNode.next = currentNode?.next;
+                    }
                 }
+
+                this.length--;
+
+                //clear node
+                currentNode = undefined;
+                
+                return item;
             }
             previousNode = currentNode;
             currentNode = currentNode?.next;
@@ -129,52 +123,46 @@ export default class SinglyLinkedList<T> {
     removeAt(idx: number): T | undefined {
         let currentNode = this.head;
         let previousNode = undefined;
+        let item: T | undefined = undefined;
 
+
+        if (idx === 0) {
+            if (this.length === 1) {
+                this.tail = undefined;
+            }
+            item = this.head?.item;
+            this.head = this.head?.next;
+
+            //clear node
+            currentNode = undefined;
+
+            this.length--;
+            return item;
+        }
 
 
         for (let i = 0; i < this.length; i++) {
 
             if (i === idx) {
-
-                if (i == 0) {
-
-                    this.head = currentNode?.next;
-                    //free node
-                    const item = currentNode?.item;
-
-                    if (this.tail === currentNode) {
-                        this.tail = undefined;
+                if (previousNode) {
+                    if (idx === this.length - 1) {
+                        this.tail = previousNode;
+                        previousNode.next = undefined;
+                    } else {
+                        previousNode.next = currentNode?.next;
                     }
-                    currentNode = undefined;
+                    item = currentNode?.item;
 
-                    this.length--;
-                    return item;
-
-                } else if (i === this.length - 1 && previousNode) {
-                    this.tail = previousNode;
-                    previousNode.next = undefined;
-
-                    //free node 
-                    const item = currentNode?.item;
-                    currentNode = undefined;
-
-                    this.length--;
-                    return item;
-
-                } else if (previousNode) {
-                    previousNode.next = currentNode?.next;
-
-                    //free node
-                    const item = currentNode?.item;
+                    //clear node
                     currentNode = undefined;
 
                     this.length--;
                     return item;
                 }
+
             }
             previousNode = currentNode;
             currentNode = currentNode?.next;
-
         }
 
         return undefined;
