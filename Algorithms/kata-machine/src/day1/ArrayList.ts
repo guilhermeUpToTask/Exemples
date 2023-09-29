@@ -8,9 +8,9 @@ export default class ArrayList<T> {
     private arr: Array<T>;
 
 
-    constructor(size:number) {
-        this.capacity = size*2;
-        this.length = size;
+    constructor(size: number) {
+        this.capacity = size * 2;
+        this.length = 0;
         this.arr = new Array<T>(this.capacity);
     }
 
@@ -36,27 +36,27 @@ export default class ArrayList<T> {
         newArr[0] = item;
 
         for (let i = 1; i <= this.length; i++) {
-            newArr[i] = this.arr[i-1];
+            newArr[i] = this.arr[i - 1];
         }
         this.arr = newArr;
         this.length++;
     }
 
     insertAt(item: T, idx: number): void {
-        if (idx > this.length){
-            this.capacity*= 2;
+        if (idx > this.length) {
+            this.capacity *= 2;
         }
 
-        const temp =  this.arr[idx];
+        const temp = this.arr[idx];
         const newArr = new Array<T>(this.capacity);
 
-        for(let i = 0; i < idx; i++){
+        for (let i = 0; i < idx; i++) {
             newArr[i] = this.arr[i];
-        
+
         }
         newArr[idx] = item;
         for (let i = idx; i < this.length; i++) {
-            newArr[i+1] = this.arr[i];
+            newArr[i + 1] = this.arr[i];
         }
         this.arr = newArr;
         this.length++;
@@ -68,24 +68,31 @@ export default class ArrayList<T> {
         }
         this.arr[this.length] = item;
         this.length++;
+
     }
 
     remove(item: T): T | undefined {
         const newArr = new Array<T>(this.capacity);
         let itemFound = undefined;
+        let offset: number = 0;
         for (let i = 0; i < this.length; i++) {
-            if (this.arr[i] !== item) {
-                newArr[i] = this.arr[i];
-            } else {
+            if (this.arr[i] === item) {
+                offset = 1;
                 itemFound = this.arr[i];
             }
+            newArr[i] = this.arr[i + offset];
         }
-        this.arr = newArr;
-        this.length--;
+
+        if (itemFound) {
+            this.arr = newArr;
+            this.length--;
+        }
+
         return itemFound;
     }
 
     get(idx: number): T | undefined {
+
         if (idx < 0 || idx >= this.length) {
             return undefined;
         } else {
@@ -98,7 +105,6 @@ export default class ArrayList<T> {
             return undefined;
         }
         const item = this.arr[idx];
-
         for (let i = idx; i < this.length; i++) {
             this.arr[i] = this.arr[i + 1];
         }
