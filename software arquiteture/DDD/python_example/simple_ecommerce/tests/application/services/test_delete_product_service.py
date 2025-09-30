@@ -27,16 +27,29 @@ product3 = Product(
     description="A Red t-shirt",
 )
 
-def test_get_product_by_id(get_product_service, fake_repo):
+def test_product_was_deleted(delete_product_service, fake_repo):
     fake_repo.add(product1)
     fake_repo.add(product2)
     fake_repo.add(product3)
-    assert get_product_service.execute("p2") == product2
-
-
-def test_get_product_by_id_product_not_found_raises(get_product_service, fake_repo):
+    delete_product_service.execute("p2")
+    
+    assert fake_repo.list_all() == [product1, product3]
+    
+    
+def test_all_products_was_deleted(delete_product_service, fake_repo):
     fake_repo.add(product1)
     fake_repo.add(product2)
     fake_repo.add(product3)
+    delete_product_service.execute("p1")
+    delete_product_service.execute("p2")
+    delete_product_service.execute("p3")
+    
+    assert len(fake_repo.list_all()) == 0
+    assert fake_repo.list_all() == []
+
+def test_product_not_found_for_deletion_raises(delete_product_service, fake_repo):
+    fake_repo.add(product1)
+    fake_repo.add(product2)
+    
     with pytest.raises(ValueError):
-        get_product_service.execute("p4")
+        delete_product_service.execute("p3")

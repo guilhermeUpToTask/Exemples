@@ -1,47 +1,4 @@
-from typing import List
 import pytest
-from src.domain.catalog.entities.product import Product
-from src.domain.catalog.value_objects.price import Price
-from src.domain.catalog.value_objects.category_name import CategoryName
-from src.domain.catalog.value_objects.product_name import ProductName
-from src.domain.catalog.repositories.product_repository import ProductRepository
-from src.application.services.register_product_service import RegisterProductService
-
-
-# Fake Repository for tests
-class FakeProductRepository(ProductRepository):
-    def __init__(self):
-        self.products = {}
-
-    def add(self, product):
-        self.products[product.id] = product
-
-    def delete(self, product_id):
-        self.products.pop(product_id, None)
-
-    def get_by_id(self, product_id: str) -> Product | None:
-        return self.products.get(product_id)
-
-    def list_all(self) -> List[Product]:
-        return list(self.products.values())
-
-    def list_by_category(self, category: CategoryName) -> List[Product]:
-        return list(self.products.values())
-
-    def update(self, product: Product) -> Product:
-        return product
-
-
-@pytest.fixture
-def fake_repo():
-    return FakeProductRepository()
-
-
-@pytest.fixture
-def register_service(fake_repo):
-    return RegisterProductService(repository=fake_repo)
-
-
 def test_register_product_success(register_service, fake_repo):
     product = register_service.execute(
         id="p1", name="Blue Jeans", category="jeans", price=200.0
