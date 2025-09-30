@@ -3,7 +3,7 @@ from src.domain.catalog.value_objects.price import Price
 from src.domain.catalog.repositories.product_repository import ProductRepository
 
 
-class UpdateProductPriceService:
+class ChangeProductPriceService:
 
     def __init__(self, repository: ProductRepository):
         self.repository = repository
