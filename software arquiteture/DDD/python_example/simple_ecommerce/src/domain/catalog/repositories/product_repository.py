@@ -4,6 +4,7 @@
 #this possibility the domain layer to depends only the contracts
 from abc import ABC, abstractmethod
 from typing import List
+from src.domain.catalog.value_objects.category_name import CategoryName
 from src.domain.catalog.entities.product import Product
 
 class ProductRepository(ABC):
@@ -12,7 +13,7 @@ class ProductRepository(ABC):
         ...
     
     @abstractmethod
-    def remove(self, product_id: str) -> None:
+    def delete(self, product_id: str) -> None:
         ...
     
     @abstractmethod
@@ -21,5 +22,16 @@ class ProductRepository(ABC):
     
     @abstractmethod
     def list_all(self) -> List[Product]:
+        ...
+    
+    @abstractmethod
+    def list_by_category(self, category:CategoryName) -> List[Product]:
+        ...
+    
+    @abstractmethod
+    def update(self, product: Product) -> Product:
+        """ 
+        Update an existing product.
+        """
         ...
 
