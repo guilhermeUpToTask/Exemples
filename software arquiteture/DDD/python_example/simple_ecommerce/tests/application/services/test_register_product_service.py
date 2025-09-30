@@ -16,7 +16,7 @@ class FakeProductRepository(ProductRepository):
     def add(self, product):
         self.products[product.id] = product
 
-    def remove(self, product_id):
+    def delete(self, product_id):
         self.products.pop(product_id, None)
 
     def get_by_id(self, product_id: str) -> Product | None:
@@ -24,6 +24,12 @@ class FakeProductRepository(ProductRepository):
 
     def list_all(self) -> List[Product]:
         return list(self.products.values())
+
+    def list_by_category(self, category: CategoryName) -> List[Product]:
+        return list(self.products.values())
+
+    def update(self, product: Product) -> Product:
+        return product
 
 
 @pytest.fixture
