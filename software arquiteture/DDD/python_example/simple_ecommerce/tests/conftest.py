@@ -5,7 +5,7 @@ from src.application.services.get_product_service import GetProductService
 from src.application.services.rename_product_service import RenameProductService
 from src.application.services.list_products_service import ListProductsService
 from src.domain.catalog.entities.product import Product
-from src.domain.catalog.value_objects.category_name import CategoryName
+from src.domain.catalog.value_objects.product_value_objects import CategoryName, ProductId
 from src.domain.catalog.repositories.product_repository import ProductRepository
 from src.application.services.register_product_service import RegisterProductService
 
@@ -17,10 +17,10 @@ class FakeProductRepository(ProductRepository):
     def add(self, product: Product):
         self.products[product.id] = product
 
-    def delete(self, product_id: str):
+    def delete(self, product_id: ProductId):
         self.products.pop(product_id, None)
 
-    def get_by_id(self, product_id: str) -> Product | None:
+    def get_by_id(self, product_id: ProductId) -> Product | None:
         return self.products.get(product_id)
 
     def list_all(self):

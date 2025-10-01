@@ -1,8 +1,9 @@
 import pytest
 from src.domain.catalog.value_objects.price import Price
-from src.domain.catalog.value_objects.product_name import ProductName
-from src.domain.catalog.value_objects.category_name import CategoryName
+from src.domain.catalog.value_objects.product_value_objects import ProductName, CategoryName
 
+
+#TODO: Test Generic ID VO
 
 # Price
 def test_price_positive():
