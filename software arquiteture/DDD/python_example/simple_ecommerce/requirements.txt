@@ -1,0 +1,26 @@
+# ===== Runtime dependencies =====
+fastapi
+uvicorn[standard]
+pydantic
+sqlmodel
+sqlalchemy>=1.4
+alembic
+asyncpg                     # PostgreSQL async driver (use psycopg2-binary if you prefer sync)
+PyJWT                       # JWT library (PyJWT) - alternative to python-jose
+cryptography                # optional; required for some JWT algorithms (RS*/ES*)
+passlib[bcrypt]             # password hashing
+python-dotenv               # load .env files
+orjson                      # optional: fast JSON serializer (FastAPI supports orjson)
+aiofiles                    # for serving/uploading files async
+python-multipart            # form/file parsing for FastAPI
+
+# ===== Testing / Dev dependencies =====
+pytest
+pytest-asyncio
+httpx                       # test client for async requests
+pytest-cov
+factory-boy                 # test data factories (optional)
+black                       # code formatter (optional)
+isort                       # import sorter (optional)
+mypy                        # optional static type checking
+flake8                      # optional linting
