@@ -1,5 +1,6 @@
-from src.domain.catalog.value_objects.category_name import CategoryName
+from src.domain.catalog.value_objects.product_value_objects import CategoryName
 from src.domain.catalog.repositories.product_repository import ProductRepository
+
 
 class ListProductsService:
     def __init__(self, repository: ProductRepository) -> None:
