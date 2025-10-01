@@ -1,0 +1,1 @@
+This is a simple ecommerce attempt to implement DDD using python and Fastapi.
