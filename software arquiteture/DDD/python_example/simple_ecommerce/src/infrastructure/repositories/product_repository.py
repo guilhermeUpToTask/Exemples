@@ -10,7 +10,7 @@ from src.infrastructure.db.data_mapper import DataMapper
 
 
 
-class ProductModel(SQLModel):
+class ProductModel(SQLModel, table=True):
     __tablename__ = "products" #type: ignore
     id:UUID = Field(primary_key=True)
     name:str
@@ -47,7 +47,7 @@ class SQLModelProductRepository(ProductRepository):
         product_model = self.mapper.entity_to_model(product)
         self.session.add(product_model)
 
-    def delete(self, product_id: ProductId):
+    def delete(self, product_id):
         product_model = self.session.get(ProductModel, product_id)
         if product_model:
             self.session.delete(product_model)
@@ -63,7 +63,7 @@ class SQLModelProductRepository(ProductRepository):
         return [self.mapper.model_to_entity(m) for m in product_models]
 
     def list_by_category(self, category: CategoryName) -> List[Product]:
-        select_by_category_stmt = select(ProductModel).where(ProductModel.category == category)
+        select_by_category_stmt = select(ProductModel).where(ProductModel.category == category.value)
         product_models = self.session.exec(select_by_category_stmt).all()
         return [self.mapper.model_to_entity(m) for m in product_models]
 
@@ -76,3 +76,6 @@ class SQLModelProductRepository(ProductRepository):
         self.session.add(product_model)
         
         return self.mapper.model_to_entity(product_model)
+
+    def flush(self):
+        self.session.flush()
