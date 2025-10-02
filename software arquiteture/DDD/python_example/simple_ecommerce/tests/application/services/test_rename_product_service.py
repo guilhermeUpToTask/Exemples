@@ -4,7 +4,7 @@ from src.domain.catalog.value_objects.product_value_objects import (
     ProductName,
     ProductId,
 )
-from src.domain.catalog.value_objects.price import Price
+from src.domain.shared.value_objects import Price
 from src.domain.catalog.entities.product import Product
 
 product1 = Product(

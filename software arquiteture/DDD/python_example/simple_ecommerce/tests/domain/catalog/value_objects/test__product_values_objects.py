@@ -1,9 +1,13 @@
 import pytest
-from src.domain.catalog.value_objects.price import Price
-from src.domain.catalog.value_objects.product_value_objects import ProductName, CategoryName
+from src.domain.shared.value_objects import Price
+from src.domain.catalog.value_objects.product_value_objects import (
+    ProductName,
+    CategoryName,
+)
 
 
-#TODO: Test Generic ID VO
+# TODO: Test Generic ID VO
+
 
 # Price
 def test_price_positive():
@@ -26,12 +30,14 @@ def test_product_name_valid():
 def test_product_name_empty_raises():
     with pytest.raises(ValueError):
         ProductName("")
-        
+
+
 # Category Name
 def test_category_name_valid():
     cat = CategoryName("jeans")
     assert cat.value == "jeans"
-    
+
+
 def test_category_name_invalid():
     with pytest.raises(ValueError):
         CategoryName("Invalid Name")

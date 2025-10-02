@@ -1,6 +1,6 @@
 import pytest
 
-from src.domain.catalog.value_objects.price import Price
+from src.domain.shared.value_objects import Price
 from src.domain.catalog.value_objects.product_value_objects import ProductName
 
 def test_add_and_get_by_id(sqlmodel_product_repo, sample_product):

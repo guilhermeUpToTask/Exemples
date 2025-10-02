@@ -1,7 +1,11 @@
 from typing import List
 import pytest
-from src.domain.catalog.value_objects.product_value_objects import CategoryName, ProductName, ProductId
-from src.domain.catalog.value_objects.price import Price
+from src.domain.catalog.value_objects.product_value_objects import (
+    CategoryName,
+    ProductName,
+    ProductId,
+)
+from src.domain.shared.value_objects import Price
 from src.domain.catalog.entities.product import Product
 
 product1 = Product(
@@ -25,6 +29,7 @@ product3 = Product(
     price=Price(200.0),
     description="A Red t-shirt",
 )
+
 
 def test_get_product_by_id(get_product_service, fake_repo):
     fake_repo.add(product1)

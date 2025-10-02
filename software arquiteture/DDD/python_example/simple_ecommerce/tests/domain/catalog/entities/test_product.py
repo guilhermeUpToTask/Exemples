@@ -1,6 +1,6 @@
 import pytest
 from src.domain.catalog.entities.product import Product
-from src.domain.catalog.value_objects.price import Price
+from src.domain.shared.value_objects import Price
 from src.domain.catalog.value_objects.product_value_objects import CategoryName, ProductName, ProductId
 
 def test_create_product():

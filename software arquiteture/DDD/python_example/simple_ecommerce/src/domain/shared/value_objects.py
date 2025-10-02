@@ -25,6 +25,13 @@ class ValueObject:
     """
 
 
-# TODO: implement money value object here later
 @dataclass(frozen=True)
-class Money(ValueObject): ...
+class Price(ValueObject):
+    # atributes
+    amount: float
+    currency: str = "USD"
+
+    # after init
+    def __post_init__(self):
+        if self.amount < 0:
+            raise ValueError("Price cannot be negative")

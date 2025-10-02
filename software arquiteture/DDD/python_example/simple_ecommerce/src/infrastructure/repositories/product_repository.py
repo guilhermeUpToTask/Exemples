@@ -5,7 +5,7 @@ from sqlmodel import Field, SQLModel, Session, select
 from src.domain.catalog.entities.product import Product
 from src.domain.catalog.repositories.product_repository import ProductRepository
 from src.domain.catalog.value_objects.product_value_objects import CategoryName, ProductId,ProductName
-from src.domain.catalog.value_objects.price import Price
+from src.domain.shared.value_objects import Price
 from src.infrastructure.db.data_mapper import DataMapper
 
 

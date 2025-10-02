@@ -1,17 +1,25 @@
 import pytest
 from sqlmodel import SQLModel, Session, create_engine
-from src.domain.catalog.value_objects.price import Price
-from src.infrastructure.repositories.product_repository import ProductDataMapper, SQLModelProductRepository
-from src.application.services.change_product_price_service import ChangeProductPriceService
-from src.application.services.delete_product_service import DeleteProductService
-from src.application.services.get_product_service import GetProductService
-from src.application.services.rename_product_service import RenameProductService
-from src.application.services.list_products_service import ListProductsService
-from src.application.services.register_product_service import RegisterProductService
+from src.domain.shared.value_objects import Price
+from src.infrastructure.repositories.product_repository import (
+    ProductDataMapper,
+    SQLModelProductRepository,
+)
+from src.application.catalog.services.product_services import (
+    ChangeProductPriceService,
+    DeleteProductService,
+    GetProductService,
+    RenameProductService,
+    ListProductsService,
+    RegisterProductService,
+)
 from src.domain.catalog.entities.product import Product
-from src.domain.catalog.value_objects.product_value_objects import CategoryName, ProductId, ProductName
+from src.domain.catalog.value_objects.product_value_objects import (
+    CategoryName,
+    ProductId,
+    ProductName,
+)
 from src.domain.catalog.repositories.product_repository import ProductRepository
-
 
 
 class FakeProductRepository(ProductRepository):
@@ -47,27 +55,33 @@ def fake_repo():
 def register_service(fake_repo):
     return RegisterProductService(repository=fake_repo)
 
+
 @pytest.fixture
 def list_products_service(fake_repo):
     return ListProductsService(fake_repo)
+
 
 @pytest.fixture
 def get_product_service(fake_repo):
     return GetProductService(fake_repo)
 
+
 @pytest.fixture
 def delete_product_service(fake_repo):
     return DeleteProductService(fake_repo)
+
 
 @pytest.fixture
 def change_product_price_service(fake_repo):
     return ChangeProductPriceService(fake_repo)
 
+
 @pytest.fixture()
 def rename_product_service(fake_repo):
     return RenameProductService(fake_repo)
 
-#In-Memory SQLite
+
+# In-Memory SQLite
 @pytest.fixture
 def engine():
     engine = create_engine("sqlite:///:memory:")
@@ -75,14 +89,17 @@ def engine():
     yield engine
     engine.dispose()
 
+
 @pytest.fixture
 def session(engine):
     with Session(engine) as session:
-            yield session
+        yield session
+
 
 @pytest.fixture
-def sqlmodel_product_repo (session):
+def sqlmodel_product_repo(session):
     return SQLModelProductRepository(session, ProductDataMapper())
+
 
 @pytest.fixture
 def sample_product():
@@ -91,5 +108,5 @@ def sample_product():
         name=ProductName("Blue Jeans"),
         price=Price(99.99),
         category=CategoryName("jeans"),
-        description="A sample product for testing"
+        description="A sample product for testing",
     )

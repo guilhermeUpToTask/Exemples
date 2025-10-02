@@ -1,7 +1,11 @@
 from typing import List
 import pytest
-from src.domain.catalog.value_objects.product_value_objects import CategoryName, ProductName, ProductId
-from src.domain.catalog.value_objects.price import Price
+from src.domain.catalog.value_objects.product_value_objects import (
+    CategoryName,
+    ProductName,
+    ProductId,
+)
+from src.domain.shared.value_objects import Price
 from src.domain.catalog.entities.product import Product
 
 product1 = Product(
@@ -89,6 +93,7 @@ def test_list_by_category_products_success(list_products_service, fake_repo):
     fake_repo.add(product3)
     assert list_products_service.execute("shirts") == correct_list
 
-def test_list_by_category_products_invalid_category(list_products_service): 
+
+def test_list_by_category_products_invalid_category(list_products_service):
     with pytest.raises(ValueError):
         list_products_service.execute("Invalid Category Name")

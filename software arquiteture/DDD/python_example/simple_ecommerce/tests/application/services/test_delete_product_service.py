@@ -1,7 +1,11 @@
 from typing import List
 import pytest
-from src.domain.catalog.value_objects.product_value_objects import CategoryName, ProductName, ProductId
-from src.domain.catalog.value_objects.price import Price
+from src.domain.catalog.value_objects.product_value_objects import (
+    CategoryName,
+    ProductName,
+    ProductId,
+)
+from src.domain.shared.value_objects import Price
 from src.domain.catalog.entities.product import Product
 
 product1 = Product(
@@ -26,15 +30,16 @@ product3 = Product(
     description="A Red t-shirt",
 )
 
+
 def test_product_was_deleted(delete_product_service, fake_repo):
     fake_repo.add(product1)
     fake_repo.add(product2)
     fake_repo.add(product3)
     delete_product_service.execute(product2.id)
-    
+
     assert fake_repo.list_all() == [product1, product3]
-    
-    
+
+
 def test_all_products_was_deleted(delete_product_service, fake_repo):
     fake_repo.add(product1)
     fake_repo.add(product2)
@@ -42,9 +47,10 @@ def test_all_products_was_deleted(delete_product_service, fake_repo):
     delete_product_service.execute(product1.id)
     delete_product_service.execute(product2.id)
     delete_product_service.execute(product3.id)
-    
+
     assert len(fake_repo.list_all()) == 0
     assert fake_repo.list_all() == []
+
 
 def test_product_not_found_for_deletion_raises(delete_product_service, fake_repo):
     fake_repo.add(product1)
