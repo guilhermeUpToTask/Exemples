@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, Generic, TypeVar
 from src.domain.shared.entities import Entity
-from src.domain.shared.value_objects import GenericUUID
 
 MapperEntity = TypeVar("MapperEntity", bound= Entity)
 MapperModel = TypeVar("MapperModel", bound=Any)
