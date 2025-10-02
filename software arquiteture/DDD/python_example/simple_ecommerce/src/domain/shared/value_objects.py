@@ -1,6 +1,6 @@
 import uuid
 from dataclasses import dataclass
-from typing import Any, Type, TypeVar
+from typing import Any
 from pydantic import GetCoreSchemaHandler
 
 
