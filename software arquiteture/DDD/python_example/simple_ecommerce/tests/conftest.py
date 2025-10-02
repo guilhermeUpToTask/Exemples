@@ -1,13 +1,17 @@
 import pytest
+from sqlmodel import SQLModel, Session, create_engine
+from src.domain.catalog.value_objects.price import Price
+from src.infrastructure.repositories.product_repository import ProductDataMapper, SQLModelProductRepository
 from src.application.services.change_product_price_service import ChangeProductPriceService
 from src.application.services.delete_product_service import DeleteProductService
 from src.application.services.get_product_service import GetProductService
 from src.application.services.rename_product_service import RenameProductService
 from src.application.services.list_products_service import ListProductsService
-from src.domain.catalog.entities.product import Product
-from src.domain.catalog.value_objects.product_value_objects import CategoryName, ProductId
-from src.domain.catalog.repositories.product_repository import ProductRepository
 from src.application.services.register_product_service import RegisterProductService
+from src.domain.catalog.entities.product import Product
+from src.domain.catalog.value_objects.product_value_objects import CategoryName, ProductId, ProductName
+from src.domain.catalog.repositories.product_repository import ProductRepository
+
 
 
 class FakeProductRepository(ProductRepository):
@@ -62,3 +66,30 @@ def change_product_price_service(fake_repo):
 @pytest.fixture()
 def rename_product_service(fake_repo):
     return RenameProductService(fake_repo)
+
+#In-Memory SQLite
+@pytest.fixture
+def engine():
+    engine = create_engine("sqlite:///:memory:")
+    SQLModel.metadata.create_all(engine)
+    yield engine
+    engine.dispose()
+
+@pytest.fixture
+def session(engine):
+    with Session(engine) as session:
+            yield session
+
+@pytest.fixture
+def sqlmodel_product_repo (session):
+    return SQLModelProductRepository(session, ProductDataMapper())
+
+@pytest.fixture
+def sample_product():
+    return Product(
+        id=Product.next_id(),
+        name=ProductName("Blue Jeans"),
+        price=Price(99.99),
+        category=CategoryName("jeans"),
+        description="A sample product for testing"
+    )
