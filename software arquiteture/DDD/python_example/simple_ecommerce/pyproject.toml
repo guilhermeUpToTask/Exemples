@@ -27,6 +27,7 @@ dependencies = [
     "pytest-cov>=7.0.0",
     "python-dotenv>=1.1.1",
     "python-multipart>=0.0.20",
+    "ruff>=0.13.3",
     "sqlalchemy>=1.4",
     "sqlmodel>=0.0.25",
     "uvicorn[standard]>=0.37.0",

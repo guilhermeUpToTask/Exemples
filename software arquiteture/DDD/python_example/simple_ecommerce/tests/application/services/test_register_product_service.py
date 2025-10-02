@@ -11,6 +11,4 @@ def test_register_product_success(register_service, fake_repo):
 
 def test_register_product_invalid_price_raises(register_service):
     with pytest.raises(ValueError):
-        register_service.execute(
-            name="Blue Jeans", category="jeans", price=-100
-        )
+        register_service.execute(name="Blue Jeans", category="jeans", price=-100)

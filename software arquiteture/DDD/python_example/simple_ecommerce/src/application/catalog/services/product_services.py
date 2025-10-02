@@ -14,7 +14,6 @@ from src.domain.catalog.repositories.product_repository import ProductRepository
 
 
 class RegisterProductService:
-
     def __init__(self, repository: ProductRepository):
         self.repository = repository
 
@@ -35,7 +34,6 @@ class RegisterProductService:
 
 
 class DeleteProductService:
-
     def __init__(self, repository: ProductRepository) -> None:
         self.repository = repository
 
@@ -69,7 +67,6 @@ class ListProductsService:
 
 
 class ChangeProductPriceService:
-
     def __init__(self, repository: ProductRepository):
         self.repository = repository
 
@@ -85,7 +82,6 @@ class ChangeProductPriceService:
 
 
 class RenameProductService:
-
     def __init__(self, repository: ProductRepository):
         self.repository = repository
 

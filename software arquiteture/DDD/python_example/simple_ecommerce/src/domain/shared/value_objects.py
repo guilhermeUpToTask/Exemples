@@ -5,7 +5,6 @@ from pydantic import GetCoreSchemaHandler
 
 
 class GenericUUID(uuid.UUID):
-
     # generates id
     @classmethod
     def next_id(cls):

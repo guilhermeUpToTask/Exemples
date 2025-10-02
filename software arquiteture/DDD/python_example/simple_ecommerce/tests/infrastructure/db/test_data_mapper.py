@@ -83,4 +83,3 @@ def test_round_trip(mapper, entity):
     model = mapper.entity_to_model(entity)
     new_entity = mapper.model_to_entity(model)
     assert new_entity == entity  # compares dataclass fields
-    

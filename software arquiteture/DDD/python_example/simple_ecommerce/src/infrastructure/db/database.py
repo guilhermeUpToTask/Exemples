@@ -6,14 +6,17 @@ from src.infrastructure.db.config import db_settings
 url_object = URL.create(
     "postgresql+psycopg2",
     username=db_settings.DATABASE_USERNAME,
-    password=db_settings.DATABASE_PASSWORD, 
+    password=db_settings.DATABASE_PASSWORD,
     host=db_settings.DATABASE_HOST,
     database=db_settings.DATABASE_NAME,
 )
 engine = create_engine(url_object, echo=True)
 
+
 def get_db() -> Generator[Session, None, None]:
     with Session(engine) as session:
         yield session
-#TODO: This will go in api/deps.py        
-#SessionDep = Annotated[Session, Depends(get_db)]
+
+
+# TODO: This will go in api/deps.py
+# SessionDep = Annotated[Session, Depends(get_db)]

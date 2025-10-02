@@ -1,7 +1,12 @@
 import pytest
 from src.domain.catalog.entities.product import Product
 from src.domain.shared.value_objects import Price
-from src.domain.catalog.value_objects.product_value_objects import CategoryName, ProductName, ProductId
+from src.domain.catalog.value_objects.product_value_objects import (
+    CategoryName,
+    ProductName,
+    ProductId,
+)
+
 
 def test_create_product():
     product_id = ProductId.next_id()
@@ -29,7 +34,7 @@ def test_product_equality_by_id():
         price=Price(200.0),
     )
     product_2 = Product(
-        id=product_1.id,#same id
+        id=product_1.id,  # same id
         name=ProductName("Light Blue Jeans"),
         category=CategoryName("jeans"),
         price=Price(250.0),
