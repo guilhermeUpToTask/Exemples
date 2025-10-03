@@ -7,11 +7,11 @@ from src.domain.catalog.value_objects.product_value_objects import (
     CategoryName,
 )
 
-
+#TODO: Later in the development this entity will became a aggregator and there where all the behavior will live
 @dataclass
 class Product(Entity[ProductId]):
     ID_CLASS = ProductId
     name: ProductName
     category: CategoryName
     price: Price
-    description: str = ""
+    description: str

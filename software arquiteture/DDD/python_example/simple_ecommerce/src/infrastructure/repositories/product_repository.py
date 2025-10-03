@@ -12,7 +12,7 @@ from src.domain.catalog.value_objects.product_value_objects import (
 from src.domain.shared.value_objects import Price
 from src.infrastructure.db.data_mapper import DataMapper
 
-
+#The repository never modifies aggregates, it only persists them.
 class ProductModel(SQLModel, table=True):
     __tablename__ = "products"  # type: ignore
     id: UUID = Field(primary_key=True)
@@ -43,9 +43,9 @@ class ProductDataMapper(DataMapper[Product, ProductModel]):
 
 
 class SQLModelProductRepository(ProductRepository):
-    def __init__(self, session: Session, mapper: ProductDataMapper) -> None:
+    def __init__(self, session: Session) -> None:
         self.session = session
-        self.mapper = mapper
+        self.mapper = ProductDataMapper()
 
     def add(self, product: Product):
         product_model = self.mapper.entity_to_model(product)

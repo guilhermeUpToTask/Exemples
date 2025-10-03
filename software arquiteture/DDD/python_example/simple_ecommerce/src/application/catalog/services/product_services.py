@@ -1,3 +1,5 @@
+from src.api.schemas.products import SimpleProductUpdate
+from src.application.catalog.uow.catalog_uow import CatalogUnitOfWork
 from src.domain.catalog.value_objects.product_value_objects import (
     CategoryName,
     ProductId,
@@ -5,7 +7,6 @@ from src.domain.catalog.value_objects.product_value_objects import (
 )
 from src.domain.catalog.entities.product import Product
 from src.domain.shared.value_objects import Price
-from src.domain.catalog.repositories.product_repository import ProductRepository
 
 
 # TODO: Commits should be done in unity of work for resuability of services
@@ -14,8 +15,8 @@ from src.domain.catalog.repositories.product_repository import ProductRepository
 
 
 class RegisterProductService:
-    def __init__(self, repository: ProductRepository):
-        self.repository = repository
+    def __init__(self, uow: CatalogUnitOfWork):
+        self.uow = uow
 
     def execute(
         self, name: str, category: str, price: float, description: str = ""
@@ -28,70 +29,79 @@ class RegisterProductService:
             description=description,
         )
 
-        self.repository.add(product)
-
+        self.uow.products.add(product)
         return product
 
 
 class DeleteProductService:
-    def __init__(self, repository: ProductRepository) -> None:
-        self.repository = repository
+    def __init__(self, uow: CatalogUnitOfWork):
+        self.uow = uow
 
     def execute(self, product_id: ProductId):
-        product = self.repository.get_by_id(product_id)
+        product = self.uow.products.get_by_id(product_id)
         if not product:
-            raise ValueError("Product Not Founded")
-        self.repository.delete(product.id)
+            raise ValueError("Product Not Found")
+        self.uow.products.delete(product.id)
 
 
 class GetProductService:
-    def __init__(self, repository: ProductRepository) -> None:
-        self.repository = repository
+    def __init__(self, uow: CatalogUnitOfWork):
+        self.uow = uow
 
     def execute(self, product_id: ProductId):
-        product = self.repository.get_by_id(product_id)
+        product = self.uow.products.get_by_id(product_id)
         if not product:
             raise ValueError("Product Not Found")
         return product
 
 
 class ListProductsService:
-    def __init__(self, repository: ProductRepository) -> None:
-        self.repository = repository
+    def __init__(self, uow: CatalogUnitOfWork):
+        self.uow = uow
 
     def execute(self, category: str | None = None):
         if category:
             cat = CategoryName(category)
-            return self.repository.list_by_category(cat)
-        return self.repository.list_all()
+            return self.uow.products.list_by_category(cat)
+        return self.uow.products.list_all()
 
 
 class ChangeProductPriceService:
-    def __init__(self, repository: ProductRepository):
-        self.repository = repository
+    def __init__(self, uow: CatalogUnitOfWork):
+        self.uow = uow
 
-    def execute(self, product_id: ProductId, new_price: float) -> Product:
-        product = self.repository.get_by_id(product_id)
-        if not product:
-            raise ValueError("Product Not Found")
-
+    def execute(self, product: Product, new_price: float):
         product.price = Price(new_price)
-        self.repository.update(product)
+        self.uow.products.update(product)
+
+
+class ChangeProductCategoryService:
+    def __init__(self, uow: CatalogUnitOfWork):
+        self.uow = uow
+
+    def execute(self, product: Product, new_category: str):
+
+        product.category = CategoryName(new_category)
+        self.uow.products.update(product)
 
         return product
 
 
-class RenameProductService:
-    def __init__(self, repository: ProductRepository):
-        self.repository = repository
+class UpdateProductSimpleFieldsService:
+    def __init__(self, uow: CatalogUnitOfWork):
+        self.uow = uow
+        # Map field names to VO constructors if needed
+        self.vo_mapping = {
+            "name": ProductName,
+        }
 
-    def execute(self, product_id: ProductId, new_name: str) -> Product:
-        product = self.repository.get_by_id(product_id)
+    def execute(self, product: Product, data: SimpleProductUpdate):
 
-        if not product:
-            raise ValueError("Product Not Found")
+        for field, value in data.model_dump(exclude_unset=True).items():
+            if value is None:
+                raise ValueError(f"{field} cannot be None")
+            converter = self.vo_mapping.get(field, lambda x: x)
+            setattr(product, field, converter(value))
 
-        product.name = ProductName(new_name)
-        self.repository.update(product)
-
+        self.uow.products.update(product)
         return product

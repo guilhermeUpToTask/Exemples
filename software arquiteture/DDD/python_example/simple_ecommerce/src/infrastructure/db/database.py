@@ -11,12 +11,3 @@ url_object = URL.create(
     database=db_settings.DATABASE_NAME,
 )
 engine = create_engine(url_object, echo=True)
-
-
-def get_db() -> Generator[Session, None, None]:
-    with Session(engine) as session:
-        yield session
-
-
-# TODO: This will go in api/deps.py
-# SessionDep = Annotated[Session, Depends(get_db)]
