@@ -31,7 +31,9 @@ def test_product_name_empty_raises():
     with pytest.raises(ValueError):
         ProductName("")
 
-
+def test_product_name_max_length_exceeds_raises():
+    with pytest.raises(ValueError):
+        ProductName("X" * 101)
 # Category Name
 def test_category_name_valid():
     cat = CategoryName("jeans")

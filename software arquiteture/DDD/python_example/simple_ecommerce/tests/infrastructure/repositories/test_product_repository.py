@@ -41,5 +41,4 @@ def test_delete(sqlmodel_product_repo, sample_product):
     sqlmodel_product_repo.add(sample_product)
     sqlmodel_product_repo.delete(sample_product.id)
     sqlmodel_product_repo.flush()
-
     assert sqlmodel_product_repo.get_by_id(sample_product.id) is None

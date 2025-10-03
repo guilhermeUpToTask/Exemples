@@ -1,84 +1,22 @@
 import pytest
 from sqlmodel import SQLModel, Session, create_engine
+from src.infrastructure.repositories.product_repository import SQLModelProductRepository
+from src.application.catalog.uow.catalog_uow import CatalogUnitOfWork
 from src.domain.shared.value_objects import Price
-from src.infrastructure.repositories.product_repository import (
-    ProductDataMapper,
-    SQLModelProductRepository,
-)
 from src.application.catalog.services.product_services import (
     ChangeProductPriceService,
+    ChangeProductCategoryService,
+    UpdateProductSimpleFieldsService,
     DeleteProductService,
     GetProductService,
-    RenameProductService,
     ListProductsService,
     RegisterProductService,
 )
 from src.domain.catalog.entities.product import Product
 from src.domain.catalog.value_objects.product_value_objects import (
     CategoryName,
-    ProductId,
     ProductName,
 )
-from src.domain.catalog.repositories.product_repository import ProductRepository
-
-
-class FakeProductRepository(ProductRepository):
-    def __init__(self):
-        self.products = {}
-
-    def add(self, product: Product):
-        self.products[product.id] = product
-
-    def delete(self, product_id: ProductId):
-        self.products.pop(product_id, None)
-
-    def get_by_id(self, product_id: ProductId) -> Product | None:
-        return self.products.get(product_id)
-
-    def list_all(self):
-        return list(self.products.values())
-
-    def list_by_category(self, category: CategoryName):
-        return [p for p in self.products.values() if p.category == category]
-
-    def update(self, product: Product) -> Product:
-        self.products[product.id] = product
-        return product
-
-
-@pytest.fixture
-def fake_repo():
-    return FakeProductRepository()
-
-
-@pytest.fixture
-def register_service(fake_repo):
-    return RegisterProductService(repository=fake_repo)
-
-
-@pytest.fixture
-def list_products_service(fake_repo):
-    return ListProductsService(fake_repo)
-
-
-@pytest.fixture
-def get_product_service(fake_repo):
-    return GetProductService(fake_repo)
-
-
-@pytest.fixture
-def delete_product_service(fake_repo):
-    return DeleteProductService(fake_repo)
-
-
-@pytest.fixture
-def change_product_price_service(fake_repo):
-    return ChangeProductPriceService(fake_repo)
-
-
-@pytest.fixture()
-def rename_product_service(fake_repo):
-    return RenameProductService(fake_repo)
 
 
 # In-Memory SQLite
@@ -98,7 +36,12 @@ def session(engine):
 
 @pytest.fixture
 def sqlmodel_product_repo(session):
-    return SQLModelProductRepository(session, ProductDataMapper())
+    return SQLModelProductRepository(session)
+
+
+@pytest.fixture
+def catalog_uow(session):
+    return CatalogUnitOfWork(session)
 
 
 @pytest.fixture
@@ -110,3 +53,38 @@ def sample_product():
         category=CategoryName("jeans"),
         description="A sample product for testing",
     )
+
+
+@pytest.fixture
+def register_service(catalog_uow):
+    return RegisterProductService(catalog_uow)
+
+
+@pytest.fixture
+def list_products_service(catalog_uow):
+    return ListProductsService(catalog_uow)
+
+
+@pytest.fixture
+def get_product_service(catalog_uow):
+    return GetProductService(catalog_uow)
+
+
+@pytest.fixture
+def delete_product_service(catalog_uow):
+    return DeleteProductService(catalog_uow)
+
+
+@pytest.fixture
+def change_product_price_service(catalog_uow):
+    return ChangeProductPriceService(catalog_uow)
+
+
+@pytest.fixture()
+def change_product_category_service(catalog_uow):
+    return ChangeProductCategoryService(catalog_uow)
+
+
+@pytest.fixture()
+def update_product_simple_fields_services(catalog_uow):
+    return UpdateProductSimpleFieldsService(catalog_uow)

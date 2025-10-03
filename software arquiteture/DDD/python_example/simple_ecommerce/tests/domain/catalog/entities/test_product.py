@@ -32,12 +32,14 @@ def test_product_equality_by_id():
         name=ProductName("Blue Jeans"),
         category=CategoryName("jeans"),
         price=Price(200.0),
+        description="A Blue Jeans"
     )
     product_2 = Product(
         id=product_1.id,  # same id
         name=ProductName("Light Blue Jeans"),
         category=CategoryName("jeans"),
         price=Price(250.0),
+        description="A Light Blue Jeans"
     )
 
     assert product_1.id == product_2.id

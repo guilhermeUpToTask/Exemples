@@ -1,10 +1,10 @@
 import pytest
 
 
-def test_register_product_success(register_service, fake_repo):
+def test_register_product_success(register_service, catalog_uow):
     product = register_service.execute(name="Blue Jeans", category="jeans", price=200.0)
     # Should be in the repository
-    assert fake_repo.get_by_id(product.id) == product
+    assert catalog_uow.products.get_by_id(product.id) == product
     assert product.name.value == "Blue Jeans"
     assert product.price.amount == 200.0
 
