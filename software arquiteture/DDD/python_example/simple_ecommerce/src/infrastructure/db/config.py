@@ -1,3 +1,4 @@
+from functools import lru_cache
 from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic_core import MultiHostUrl
@@ -22,5 +23,6 @@ class DatabaseSettings(BaseSettings):
             path=self.DATABASE_NAME,
         )
 
-
-db_settings = DatabaseSettings()  # type: ignore[call-arg] | because we load the args from the env
+@lru_cache()   # memoizes a function
+def get_db_settings() -> DatabaseSettings:
+    return DatabaseSettings() # type: ignore[call-arg] | because we load the args from the env

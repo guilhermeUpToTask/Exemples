@@ -4,11 +4,12 @@ from fastapi import Depends, Query
 from sqlmodel import Session
 
 from src.application.catalog.dtos.product_dtos import ProductFilter
-from src.infrastructure.db.database import engine
+from src.infrastructure.db.database import get_engine
 from src.application.catalog.uow.catalog_uow import CatalogUnitOfWork
 
 
 def get_db() -> Generator[Session, None, None]:
+    engine = get_engine()
     with Session(engine) as session:
         yield session
 
