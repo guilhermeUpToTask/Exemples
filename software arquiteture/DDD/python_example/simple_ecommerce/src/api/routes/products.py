@@ -3,7 +3,8 @@ from uuid import UUID
 from typing import List
 
 
-from src.domain.catalog.value_objects.product_value_objects import ProductId
+from src.domain.catalog.errors import ProductNotFoundError
+from src.domain.catalog.value_objects.product_value_objects import InvalidCategoryName, ProductId
 from src.application.catalog.services.product_services import (
     FindProductsWithFilters,
     GetProductService,
@@ -19,6 +20,7 @@ from src.api.schemas.products import (
     ProductUpdate,
 )
 from src.api.deps import CatalogUnitOfWorkDep, ProductFiltersDep
+from src.api.mappers.product_mapper import ProductAPIMapper
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
@@ -32,17 +34,17 @@ def create_product(data: ProductCreate, uow: CatalogUnitOfWorkDep):
         price=data.price,
         description=data.description,
     )
-    return ProductRead.model_validate(product)
+    return ProductAPIMapper.entity_to_read_model(product)
 
 
 @router.get("/{product_id}", response_model=ProductRead)
-def get_product(product_id: str, uow: CatalogUnitOfWorkDep):
+def get_product(product_id: UUID, uow: CatalogUnitOfWorkDep):
     service = GetProductService(uow)
     try:
-        product = service.execute(ProductId(product_id))
-    except ValueError:
+        product = service.execute(ProductId(str(product_id)))
+    except ProductNotFoundError:
         raise HTTPException(status_code=404, detail="Product not found")
-    return ProductRead.model_validate(product)
+    return ProductAPIMapper.entity_to_read_model(product)
 
 
 # TODO: implement pagination logic
@@ -53,36 +55,38 @@ def list_products(
 ):
     service = FindProductsWithFilters(uow)
     products = service.execute(filters)
-    
-    return [ProductRead.model_validate(p) for p in products]
+
+    return [ProductAPIMapper.entity_to_read_model(p) for p in products]
 
 
-@router.delete("/product_id", status_code=status.HTTP_204_NO_CONTENT)
-def delete_product(product_id: str, uow: CatalogUnitOfWorkDep):
+@router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_product(product_id: UUID, uow: CatalogUnitOfWorkDep):
     service = DeleteProductService(uow)
     try:
-        service.execute(ProductId(product_id))
-    except ValueError:
+        service.execute(ProductId(str(product_id)))
+    except ProductNotFoundError:
         raise HTTPException(status_code=404, detail="Product not found")
     return
 
 
 @router.patch("/{product_id}", response_model=ProductRead)
-def update_product(product_id: str, data: ProductUpdate, uow: CatalogUnitOfWorkDep):
-    product_id_vo = ProductId(product_id)
+def update_product(product_id: UUID, data: ProductUpdate, uow: CatalogUnitOfWorkDep):
+    try:
 
-    product = GetProductService(uow).execute(product_id_vo)
-    if not product:
+        product = GetProductService(uow).execute(ProductId(str(product_id)))
+
+        UpdateProductSimpleFieldsService(uow).execute(
+            product=product, new_name=data.name, new_description=data.description
+        )
+
+        if data.price is not None:
+            ChangeProductPriceService(uow).execute(product, data.price)
+        if data.category is not None:
+            ChangeProductCategoryService(uow).execute(product, data.category)
+
+        return ProductAPIMapper.entity_to_read_model(product)
+    
+    except ProductNotFoundError:
         raise HTTPException(status_code=404, detail="Product not found")
-
-    #TODO: Analizes the possible raised exceptions and map to correspondent statuscode
-    UpdateProductSimpleFieldsService(uow).execute(
-        product=product, new_name=data.name, new_description=data.description
-    )
-
-    if data.price is not None:
-        ChangeProductPriceService(uow).execute(product, data.price)
-    if data.category is not None:
-        ChangeProductCategoryService(uow).execute(product, data.category)
-
-    return ProductRead.model_validate(product)
+    except InvalidCategoryName:
+        raise HTTPException(status_code=400, detail="Invalid Category")    
