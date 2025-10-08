@@ -7,8 +7,16 @@ EntityId = TypeVar("EntityId", bound=GenericUUID)
 
 @dataclass
 class Entity(Generic[EntityId]):
-    id: EntityId = field(hash=True)
+    id: EntityId = field(compare=False)
     ID_CLASS: ClassVar[Type[GenericUUID]]
+
+    def __hash__(self):
+        return hash(self.id)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Entity):
+            return NotImplemented
+        return self.id == other.id
 
     @classmethod
     def next_id(cls) -> EntityId:
