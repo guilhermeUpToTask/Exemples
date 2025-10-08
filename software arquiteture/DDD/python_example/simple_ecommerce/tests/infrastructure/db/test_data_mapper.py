@@ -2,7 +2,7 @@ import pytest
 from dataclasses import dataclass
 from pydantic import BaseModel
 
-from src.infrastructure.db.data_mapper import DataMapper
+from src.infrastructure.db.mappers.data_mapper import DataMapper
 from src.domain.shared.entities import Entity
 from src.domain.shared.value_objects import GenericUUID
 

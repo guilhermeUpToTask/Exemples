@@ -1,6 +1,7 @@
 import pytest
 from src.domain.catalog.value_objects.product_value_objects import (
     CategoryName,
+    ProductDescription,
     ProductName,
     ProductId,
 )
@@ -12,21 +13,21 @@ product1 = Product(
     name=ProductName(" Blue Jeans"),
     category=CategoryName("jeans"),
     price=Price(200.0),
-    description="A Blue Jeans",
+    description=ProductDescription("A Blue Jeans"),
 )
 product2 = Product(
     id=Product.next_id(),
     name=ProductName(" Yellow t-shirt"),
     category=CategoryName("t-shirts"),
     price=Price(200.0),
-    description="A Yellow t-shirt",
+    description=ProductDescription("A Yellow t-shirt"),
 )
 product3 = Product(
     id=Product.next_id(),
     name=ProductName(" Red t-shirt"),
     category=CategoryName("t-shirts"),
     price=Price(200.0),
-    description="A Red t-shirt",
+    description=ProductDescription("A Red t-shirt"),
 )
 
 

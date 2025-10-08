@@ -9,12 +9,13 @@ from src.application.catalog.services.product_services import (
     UpdateProductSimpleFieldsService,
     DeleteProductService,
     GetProductService,
-    ListProductsService,
+    FindProductsWithFilters,
     RegisterProductService,
 )
 from src.domain.catalog.entities.product import Product
 from src.domain.catalog.value_objects.product_value_objects import (
     CategoryName,
+    ProductDescription,
     ProductName,
 )
 
@@ -51,9 +52,8 @@ def sample_product():
         name=ProductName("Blue Jeans"),
         price=Price(99.99),
         category=CategoryName("jeans"),
-        description="A sample product for testing",
+        description=ProductDescription("A sample product for testing"),
     )
-
 
 @pytest.fixture
 def register_service(catalog_uow):
@@ -61,8 +61,8 @@ def register_service(catalog_uow):
 
 
 @pytest.fixture
-def list_products_service(catalog_uow):
-    return ListProductsService(catalog_uow)
+def find_products_with_filters(catalog_uow):
+    return FindProductsWithFilters(catalog_uow)
 
 
 @pytest.fixture
