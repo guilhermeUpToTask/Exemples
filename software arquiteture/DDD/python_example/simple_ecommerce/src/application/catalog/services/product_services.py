@@ -1,3 +1,4 @@
+from src.domain.catalog.errors import ProductNotFoundError
 from src.infrastructure.db.mappers.product_filter_mapper import map_filters_to_spec
 from src.application.catalog.dtos.product_dtos import ProductFilter
 from src.application.catalog.uow.catalog_uow import CatalogUnitOfWork
@@ -35,7 +36,7 @@ class DeleteProductService:
         product = self.uow.products.get_by_id(product_id)
         if not product:
             # TODO: create product not found error for consistency and semantic.
-            raise ValueError("Product Not Found")
+            raise ProductNotFoundError("Product Not Found")
         self.uow.products.delete(product.id)
 
         return
@@ -48,7 +49,7 @@ class GetProductService:
     def execute(self, product_id: ProductId):
         product = self.uow.products.get_by_id(product_id)
         if not product:
-            raise ValueError("Product Not Found")
+            raise ProductNotFoundError("Product Not Found")
         return product
 
 
