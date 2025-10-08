@@ -1,18 +1,22 @@
 from typing import List
 from uuid import UUID
-import uuid
 from sqlmodel import Field, SQLModel, Session, select
+from src.infrastructure.db.specification_visitor import SQLModelSpecificationVisitor
+from src.domain.shared.specifications import Specification
 from src.domain.catalog.entities.product import Product
 from src.domain.catalog.repositories.product_repository import ProductRepository
 from src.domain.catalog.value_objects.product_value_objects import (
     CategoryName,
     ProductId,
     ProductName,
+    ProductDescription,
 )
 from src.domain.shared.value_objects import Price
-from src.infrastructure.db.data_mapper import DataMapper
+from src.infrastructure.db.mappers.data_mapper import DataMapper
 
-#The repository never modifies aggregates, it only persists them.
+
+# The repository never modifies aggregates, it only persists them.
+#TODO: add create at and update at fields later, and analyzes side effects
 class ProductModel(SQLModel, table=True):
     __tablename__ = "products"  # type: ignore
     id: UUID = Field(primary_key=True)
@@ -29,7 +33,7 @@ class ProductDataMapper(DataMapper[Product, ProductModel]):
             name=ProductName(instance.name),
             price=Price(instance.price),
             category=CategoryName(instance.category),
-            description=instance.description,
+            description=ProductDescription(instance.description),
         )
 
     def entity_to_model(self, entity: Product) -> ProductModel:
@@ -38,7 +42,7 @@ class ProductDataMapper(DataMapper[Product, ProductModel]):
             name=entity.name.value,
             price=entity.price.amount,
             category=entity.category.value,
-            description=entity.description,
+            description=entity.description.value,
         )
 
 
@@ -46,6 +50,13 @@ class SQLModelProductRepository(ProductRepository):
     def __init__(self, session: Session) -> None:
         self.session = session
         self.mapper = ProductDataMapper()
+        self.visitor = SQLModelSpecificationVisitor(
+            field_map={
+                "name": ProductModel.name,
+                "price": ProductModel.price,
+                "category": ProductModel.category,
+            }
+        )
 
     def add(self, product: Product):
         product_model = self.mapper.entity_to_model(product)
@@ -71,6 +82,16 @@ class SQLModelProductRepository(ProductRepository):
             ProductModel.category == category.value
         )
         product_models = self.session.exec(select_by_category_stmt).all()
+        return [self.mapper.model_to_entity(m) for m in product_models]
+
+    def find_by_specification(self, spec: Specification | None) -> List[Product]:
+        statement = select(ProductModel)
+
+        if spec:
+            predicate = spec.accept(self.visitor)
+            statement = statement.where(predicate)
+
+        product_models = self.session.exec(statement).all()
         return [self.mapper.model_to_entity(m) for m in product_models]
 
     def update(self, product: Product) -> Product:
