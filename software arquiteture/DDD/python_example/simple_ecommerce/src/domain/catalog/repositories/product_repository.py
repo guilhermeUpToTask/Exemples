@@ -4,6 +4,7 @@
 # this possibility the domain layer to depends only the contracts
 from abc import ABC, abstractmethod
 from typing import List
+from src.domain.shared.specifications import Specification
 from src.domain.catalog.value_objects.product_value_objects import (
     CategoryName,
     ProductId,
@@ -27,6 +28,8 @@ class ProductRepository(ABC):
     @abstractmethod
     def list_by_category(self, category: CategoryName) -> List[Product]: ...
 
+    @abstractmethod
+    def find_by_specification(self, spec: Specification | None) -> List[Product]:...
     @abstractmethod
     def update(self, product: Product) -> Product:
         """
