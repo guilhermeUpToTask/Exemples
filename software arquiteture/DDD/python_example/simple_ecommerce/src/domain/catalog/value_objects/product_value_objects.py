@@ -43,4 +43,4 @@ class CategoryName:
 
     def __post_init__(self):
         if self.value not in ALLOWED_CATEGORIES:
-            raise ValueError("Category name not in the Category List")
+            raise InvalidCategoryName("Category name not in the Category List")
