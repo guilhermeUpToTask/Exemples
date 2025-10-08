@@ -1,8 +1,9 @@
 from typing import Annotated
 from collections.abc import Generator
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, Query
 from sqlmodel import Session
 
+from src.application.catalog.dtos.product_dtos import ProductFilter
 from src.infrastructure.db.database import engine
 from src.application.catalog.uow.catalog_uow import CatalogUnitOfWork
 
@@ -21,3 +22,11 @@ def get_catalog_uow(session: SessionDep) -> Generator[CatalogUnitOfWork, None, N
 
 
 CatalogUnitOfWorkDep = Annotated[CatalogUnitOfWork, Depends(get_catalog_uow)]
+
+def get_product_filters(
+    min_price: float | None = Query(None, ge=0),
+    max_price: float | None = Query(None, ge=0),
+    category: str | None= Query(None)
+) -> ProductFilter:
+    return ProductFilter(min_price=min_price, max_price=max_price, category=category)
+ProductFiltersDep = Annotated[ProductFilter, Depends(get_product_filters)]

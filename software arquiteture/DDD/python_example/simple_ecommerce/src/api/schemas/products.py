@@ -1,3 +1,5 @@
+from fastapi import Query
+from pydantic import BaseModel
 from sqlmodel import Field, SQLModel
 from uuid import UUID
 
@@ -16,9 +18,7 @@ class ProductUpdate(SQLModel):
     price: float | None = Field(None, gt=0, description="Must be greater than 0")
     description: str | None
 
-class SimpleProductUpdate(SQLModel):
-    name: str | None = None
-    description: str | None = None
+
 
 class ProductRead(SQLModel):
     id: UUID
@@ -26,4 +26,5 @@ class ProductRead(SQLModel):
     category: str
     price: float
     description: str
+    
 

@@ -5,9 +5,9 @@ from typing import List
 
 from src.domain.catalog.value_objects.product_value_objects import ProductId
 from src.application.catalog.services.product_services import (
-    RegisterProductService,
+    FindProductsWithFilters,
     GetProductService,
-    ListProductsService,
+    RegisterProductService,
     DeleteProductService,
     ChangeProductPriceService,
     ChangeProductCategoryService,
@@ -17,9 +17,8 @@ from src.api.schemas.products import (
     ProductCreate,
     ProductRead,
     ProductUpdate,
-    SimpleProductUpdate,
 )
-from src.api.deps import CatalogUnitOfWorkDep
+from src.api.deps import CatalogUnitOfWorkDep, ProductFiltersDep
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
@@ -50,10 +49,11 @@ def get_product(product_id: str, uow: CatalogUnitOfWorkDep):
 @router.get("/", response_model=List[ProductRead])
 def list_products(
     uow: CatalogUnitOfWorkDep,
-    category: str | None = None,
+    filters: ProductFiltersDep,
 ):
-    service = ListProductsService(uow)
-    products = service.execute(category)
+    service = FindProductsWithFilters(uow)
+    products = service.execute(filters)
+    
     return [ProductRead.model_validate(p) for p in products]
 
 
@@ -75,8 +75,9 @@ def update_product(product_id: str, data: ProductUpdate, uow: CatalogUnitOfWorkD
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
 
+    #TODO: Analizes the possible raised exceptions and map to correspondent statuscode
     UpdateProductSimpleFieldsService(uow).execute(
-        product, SimpleProductUpdate(name=data.name, description=data.description)
+        product=product, new_name=data.name, new_description=data.description
     )
 
     if data.price is not None:
