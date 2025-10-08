@@ -1,8 +1,21 @@
+from fastapi import Depends, FastAPI
+from fastapi.testclient import TestClient
 import pytest
-from sqlmodel import SQLModel, Session, create_engine
-from src.infrastructure.repositories.product_repository import SQLModelProductRepository
-from src.application.catalog.uow.catalog_uow import CatalogUnitOfWork
+from collections.abc import Generator
+from sqlmodel import SQLModel, Session, StaticPool, create_engine
+from typing import Annotated
+
 from src.domain.shared.value_objects import Price
+from src.domain.catalog.entities.product import Product
+from src.domain.catalog.value_objects.product_value_objects import (
+    CategoryName,
+    ProductDescription,
+    ProductName,
+)
+
+from src.infrastructure.repositories.product_repository import SQLModelProductRepository
+
+from src.application.catalog.uow.catalog_uow import CatalogUnitOfWork
 from src.application.catalog.services.product_services import (
     ChangeProductPriceService,
     ChangeProductCategoryService,
@@ -12,18 +25,19 @@ from src.application.catalog.services.product_services import (
     FindProductsWithFilters,
     RegisterProductService,
 )
-from src.domain.catalog.entities.product import Product
-from src.domain.catalog.value_objects.product_value_objects import (
-    CategoryName,
-    ProductDescription,
-    ProductName,
-)
+
+from src.api.routes import products
+from src.api.deps import get_catalog_uow, get_db
 
 
-# In-Memory SQLite
+# Infrastructure Fixtures
 @pytest.fixture
 def engine():
-    engine = create_engine("sqlite:///:memory:")
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,  # 👈 This is the key
+    )
     SQLModel.metadata.create_all(engine)
     yield engine
     engine.dispose()
@@ -46,6 +60,26 @@ def catalog_uow(session):
 
 
 @pytest.fixture
+def app(session):
+    app = FastAPI()
+    app.include_router(products.router)
+
+    def _override_get_catalog_uow():
+        with CatalogUnitOfWork(session) as uow:
+            yield uow
+
+    app.dependency_overrides[get_catalog_uow] = _override_get_catalog_uow
+
+    return app
+
+
+@pytest.fixture
+def client(app):
+    return TestClient(app)
+
+
+# Samples
+@pytest.fixture
 def sample_product():
     return Product(
         id=Product.next_id(),
@@ -55,6 +89,8 @@ def sample_product():
         description=ProductDescription("A sample product for testing"),
     )
 
+
+# Services Fixture
 @pytest.fixture
 def register_service(catalog_uow):
     return RegisterProductService(catalog_uow)

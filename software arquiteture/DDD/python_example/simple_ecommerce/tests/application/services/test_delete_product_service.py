@@ -1,4 +1,5 @@
 import pytest
+from src.domain.catalog.errors import ProductNotFoundError
 from src.domain.catalog.value_objects.product_value_objects import (
     CategoryName,
     ProductDescription,
@@ -56,5 +57,5 @@ def test_product_not_found_for_deletion_raises(delete_product_service, catalog_u
     catalog_uow.products.add(product1)
     catalog_uow.products.add(product2)
     other_product_id = ProductId.next_id()
-    with pytest.raises(ValueError):
+    with pytest.raises(ProductNotFoundError):
         delete_product_service.execute(other_product_id)

@@ -1,6 +1,8 @@
 import pytest
 from src.domain.shared.value_objects import Price
 from src.domain.catalog.value_objects.product_value_objects import (
+    InvalidProductName,
+    InvalidCategoryName,
     ProductName,
     CategoryName,
 )
@@ -28,11 +30,11 @@ def test_product_name_valid():
 
 
 def test_product_name_empty_raises():
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidProductName):
         ProductName("")
 
 def test_product_name_max_length_exceeds_raises():
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidProductName):
         ProductName("X" * 101)
 # Category Name
 def test_category_name_valid():
@@ -41,5 +43,5 @@ def test_category_name_valid():
 
 
 def test_category_name_invalid():
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidCategoryName):
         CategoryName("Invalid Name")

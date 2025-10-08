@@ -1,4 +1,5 @@
 import pytest
+from src.domain.catalog.errors import ProductNotFoundError
 from src.domain.catalog.value_objects.product_value_objects import (
     CategoryName,
     ProductDescription,
@@ -43,5 +44,5 @@ def test_get_product_by_id_product_not_found_raises(get_product_service, catalog
     catalog_uow.products.add(product2)
     catalog_uow.products.add(product3)
     other_product_id = ProductId.next_id()
-    with pytest.raises(ValueError):
+    with pytest.raises(ProductNotFoundError):
         get_product_service.execute(other_product_id)
